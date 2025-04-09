@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Analysis and Chat</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -109,6 +110,24 @@
         .spinner-border {
             color: #4285F4;
         }
+        .timestamp-link {
+            color: #4285F4;
+            background-color: #e8f0fe;
+            padding: 2px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            display: inline-block;
+            margin: 0 2px;
+        }
+        .timestamp-link:hover {
+            background-color: #d2e3fc;
+            text-decoration: underline;
+        }
+        .timestamp-link:active {
+            background-color: #aecbfa;
+        }
     </style>
 </head>
 <body>
@@ -122,12 +141,32 @@
             <div class="col-md-6">
                 <div class="upload-section">
                     <h3>Upload Video</h3>
-                    <form id="upload-form" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <input type="file" class="form-control" id="video-file" name="video" accept="video/*">
+                    <ul class="nav nav-tabs mb-3" id="videoSourceTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload-content" type="button" role="tab" aria-controls="upload-content" aria-selected="true">Upload File</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="youtube-tab" data-bs-toggle="tab" data-bs-target="#youtube-content" type="button" role="tab" aria-controls="youtube-content" aria-selected="false">YouTube Link</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="videoSourceTabContent">
+                        <div class="tab-pane fade show active" id="upload-content" role="tabpanel" aria-labelledby="upload-tab">
+                            <form id="upload-form" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <input type="file" class="form-control" id="video-file" name="video" accept="video/*">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Upload & Analyze</button>
+                            </form>
                         </div>
-                        <button type="submit" class="btn btn-primary">Upload & Analyze</button>
-                    </form>
+                        <div class="tab-pane fade" id="youtube-content" role="tabpanel" aria-labelledby="youtube-tab">
+                            <form id="youtube-form">
+                                <div class="mb-3">
+                                    <input type="text" class="form-control" id="youtube-url" placeholder="Enter YouTube URL (e.g., https://www.youtube.com/watch?v=...)">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Analyze YouTube Video</button>
+                            </form>
+                        </div>
+                    </div>
                     <div class="loading-spinner" id="upload-spinner">
                         <div class="spinner-border" role="status">
                             <span class="visually-hidden">Loading...</span>
@@ -171,7 +210,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const uploadForm = document.getElementById('upload-form');
+            const youtubeForm = document.getElementById('youtube-form');
             const videoFileInput = document.getElementById('video-file');
+            const youtubeUrlInput = document.getElementById('youtube-url');
             const videoPlayerContainer = document.getElementById('video-player-container');
             const analysisContainer = document.getElementById('analysis-content');
             const chatMessages = document.getElementById('chat-messages');
@@ -180,6 +221,7 @@
             const uploadSpinner = document.getElementById('upload-spinner');
 
             let currentVideo = null;
+            let videoPlayer = null;
 
             // Handle video upload
             uploadForm.addEventListener('submit', function(e) {
@@ -222,9 +264,13 @@
                     videoElement.controls = true;
                     videoElement.style.width = '100%';
                     videoElement.style.maxHeight = '350px';
+                    videoElement.id = 'video-player';
                     
                     videoPlayerContainer.innerHTML = '';
                     videoPlayerContainer.appendChild(videoElement);
+                    
+                    // Store video player reference
+                    videoPlayer = videoElement;
                     
                     // Display analysis
                     displayAnalysis(data.analysis);
@@ -241,10 +287,110 @@
                     alert('Error: ' + error.message);
                 });
             });
-
+            
+            // Handle YouTube video analysis
+            youtubeForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const youtubeUrl = youtubeUrlInput.value.trim();
+                
+                if (!youtubeUrl) {
+                    alert('Please enter a YouTube URL');
+                    return;
+                }
+                
+                // Validate YouTube URL
+                const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/;
+                if (!youtubeRegex.test(youtubeUrl)) {
+                    alert('Please enter a valid YouTube URL');
+                    return;
+                }
+                
+                // Show loading spinner
+                uploadSpinner.style.display = 'block';
+                
+                // Send YouTube URL for analysis
+                fetch('/analyze-youtube', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ youtube_url: youtubeUrl })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Hide loading spinner
+                    uploadSpinner.style.display = 'none';
+                    
+                    if (data.error) {
+                        alert('Error: ' + data.error);
+                        return;
+                    }
+                    
+                    // Update current video
+                    currentVideo = data.filename;
+                    
+                    // Display video player
+                    const videoElement = document.createElement('video');
+                    videoElement.src = '/uploads/' + data.filename;
+                    videoElement.controls = true;
+                    videoElement.style.width = '100%';
+                    videoElement.style.maxHeight = '350px';
+                    videoElement.id = 'video-player';
+                    
+                    videoPlayerContainer.innerHTML = '';
+                    videoPlayerContainer.appendChild(videoElement);
+                    
+                    // Store video player reference
+                    videoPlayer = videoElement;
+                    
+                    // Display video metadata if available
+                    if (data.metadata) {
+                        const metadataHtml = `
+                            <div class="alert alert-info mb-3">
+                                <h5>${data.metadata.title}</h5>
+                                <p>By: ${data.metadata.author} | Views: ${data.metadata.views.toLocaleString()}</p>
+                                <p><a href="${data.metadata.source_url}" target="_blank">View on YouTube</a></p>
+                            </div>
+                        `;
+                        videoPlayerContainer.insertAdjacentHTML('afterbegin', metadataHtml);
+                    }
+                    
+                    // Display analysis
+                    displayAnalysis(data.analysis);
+                    
+                    // Enable chat
+                    chatInput.disabled = false;
+                    sendButton.disabled = false;
+                    
+                    // Add system message
+                    addMessage('YouTube video analysis complete! You can now chat about the video content.', 'ai');
+                })
+                .catch(error => {
+                    uploadSpinner.style.display = 'none';
+                    alert('Error: ' + error.message);
+                });
+            });
+            
             // Display structured analysis
             function displayAnalysis(analysis) {
                 let html = '<div class="analysis-content">';
+                
+                // Check if analysis is empty or undefined
+                if (!analysis || (Object.keys(analysis).length === 0)) {
+                    html += '<p class="text-muted">No detailed analysis available. The API may have returned raw text instead of structured data.</p>';
+                    
+                    // If there's raw analysis, display it
+                    if (analysis && analysis.raw_analysis) {
+                        html += `<div class="mb-4">
+                            <h4>Raw Analysis</h4>
+                            <pre>${analysis.raw_analysis}</pre>
+                        </div>`;
+                    }
+                    
+                    analysisContainer.innerHTML = html + '</div>';
+                    return;
+                }
                 
                 // Display summary
                 if (analysis.summary) {
@@ -261,23 +407,66 @@
                     analysis.timestamps.forEach(timestamp => {
                         html += `<div class="timestamp-item">
                             <div class="timestamp-header">${timestamp.time}</div>`;
+                        
+                        // Create a collapsible section for detailed information
+                        const detailId = `detail-${timestamp.time.replace(/:/g, '-')}`;
+                        
+                        html += `
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" 
+                                    data-bs-target="#${detailId}" aria-expanded="false" aria-controls="${detailId}">
+                                    Show Details
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary timestamp-jump" data-time="${convertTimeToSeconds(timestamp.time)}">
+                                    Jump to Time
+                                </button>
+                            </div>
+                            <div class="collapse" id="${detailId}">
+                                <div class="card card-body mb-2">`;
                             
                         if (timestamp.objects && timestamp.objects.length > 0) {
-                            html += `<div><strong>Objects:</strong> ${timestamp.objects.join(', ')}</div>`;
+                            html += `<div class="mb-2"><strong>Objects:</strong> 
+                                <ul class="mb-0">
+                                    ${timestamp.objects.map(obj => `<li>${obj}</li>`).join('')}
+                                </ul>
+                            </div>`;
                         }
                         
                         if (timestamp.people && timestamp.people.length > 0) {
-                            html += `<div><strong>People:</strong> ${timestamp.people.join(', ')}</div>`;
+                            html += `<div class="mb-2"><strong>People:</strong> 
+                                <ul class="mb-0">
+                                    ${timestamp.people.map(person => `<li>${person}</li>`).join('')}
+                                </ul>
+                            </div>`;
                         }
                         
                         if (timestamp.activities && timestamp.activities.length > 0) {
-                            html += `<div><strong>Activities:</strong> ${timestamp.activities.join(', ')}</div>`;
+                            html += `<div class="mb-2"><strong>Activities:</strong> 
+                                <ul class="mb-0">
+                                    ${timestamp.activities.map(activity => `<li>${activity}</li>`).join('')}
+                                </ul>
+                            </div>`;
                         }
                         
                         if (timestamp.visible_text) {
-                            html += `<div><strong>Visible Text:</strong> ${timestamp.visible_text}</div>`;
+                            html += `<div class="mb-2"><strong>Visible Text:</strong> ${timestamp.visible_text}</div>`;
                         }
                         
+                        if (timestamp.transcript) {
+                            html += `<div class="mb-2"><strong>Transcript:</strong> ${timestamp.transcript}</div>`;
+                        }
+                        
+                        if (timestamp.background) {
+                            html += `<div class="mb-2"><strong>Background:</strong> ${timestamp.background}</div>`;
+                        }
+                        
+                        if (timestamp.camera) {
+                            html += `<div class="mb-2"><strong>Camera:</strong> ${timestamp.camera}</div>`;
+                        }
+                        
+                        html += `</div></div>`;
+                        
+                        // Always show transcript if available (outside the collapse)
                         if (timestamp.transcript) {
                             html += `<div><strong>Transcript:</strong> ${timestamp.transcript}</div>`;
                         }
@@ -294,8 +483,41 @@
                     </div>`;
                 }
                 
+                // If none of the structured data is available, show the entire response
+                if (!analysis.summary && (!analysis.timestamps || analysis.timestamps.length === 0) && !analysis.raw_analysis) {
+                    html += `<div class="mb-4">
+                        <h4>Complete Response</h4>
+                        <pre>${JSON.stringify(analysis, null, 2)}</pre>
+                    </div>`;
+                }
+                
                 html += '</div>';
                 analysisContainer.innerHTML = html;
+                
+                // Add event listeners to timestamp jump buttons
+                document.querySelectorAll('.timestamp-jump').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const timeInSeconds = parseInt(this.getAttribute('data-time'));
+                        if (videoPlayer) {
+                            videoPlayer.currentTime = timeInSeconds;
+                            videoPlayer.play();
+                        }
+                    });
+                });
+            }
+            
+            // Helper function to convert timestamp to seconds
+            function convertTimeToSeconds(timeString) {
+                const parts = timeString.split(':').map(Number);
+                if (parts.length === 3) {
+                    // HH:MM:SS format
+                    return parts[0] * 3600 + parts[1] * 60 + parts[2];
+                } else if (parts.length === 2) {
+                    // MM:SS format
+                    return parts[0] * 60 + parts[1];
+                } else {
+                    return 0;
+                }
             }
 
             // Handle chat
@@ -341,7 +563,8 @@
                     }
                     
                     // Add AI response to chat
-                    addMessage(data.response, 'ai');
+                    const responseText = data.response.text || data.response;
+                    addMessage(responseText, 'ai');
                     
                     // Focus input for next message
                     chatInput.focus();
@@ -356,7 +579,46 @@
             function addMessage(text, sender) {
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `message ${sender === 'user' ? 'user-message' : 'ai-message'}`;
-                messageDiv.textContent = text;
+                
+                // If it's an AI message, check for timestamps and make them clickable
+                if (sender === 'ai') {
+                    // Regular expression to find timestamps in format [HH:MM:SS] or [MM:SS]
+                    const timestampRegex = /\[(\d{1,2}):(\d{2})(?::(\d{2}))?\]/g;
+                    
+                    // Replace timestamps with clickable spans
+                    const processedText = text.replace(timestampRegex, function(match, hours, minutes, seconds) {
+                        // If seconds is undefined, then it's a [MM:SS] format
+                        if (seconds === undefined) {
+                            seconds = minutes;
+                            minutes = hours;
+                            hours = '0';
+                        }
+                        
+                        // Calculate total seconds for seeking
+                        const totalSeconds = parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds);
+                        
+                        // Return a clickable span with the timestamp
+                        return `<span class="timestamp-link" data-time="${totalSeconds}">${match}</span>`;
+                    });
+                    
+                    messageDiv.innerHTML = processedText;
+                    
+                    // Add event listeners to timestamp links after a short delay to ensure DOM is updated
+                    setTimeout(() => {
+                        const timestampLinks = messageDiv.querySelectorAll('.timestamp-link');
+                        timestampLinks.forEach(link => {
+                            link.addEventListener('click', function() {
+                                const timeInSeconds = parseInt(this.getAttribute('data-time'));
+                                if (videoPlayer) {
+                                    videoPlayer.currentTime = timeInSeconds;
+                                    videoPlayer.play();
+                                }
+                            });
+                        });
+                    }, 100);
+                } else {
+                    messageDiv.textContent = text;
+                }
                 
                 chatMessages.appendChild(messageDiv);
                 
