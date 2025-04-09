@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Analysis and Chat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding-top: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .app-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .app-title {
+            color: #4285F4;
+            font-weight: 600;
+        }
+        .upload-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        .video-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            min-height: 400px;
+        }
+        .chat-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .message {
+            padding: 10px 15px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background-color: #4285F4;
+            color: white;
+            margin-left: auto;
+        }
+        .ai-message {
+            background-color: #E9ECEF;
+            color: #212529;
+        }
+        .chat-input {
+            display: flex;
+        }
+        .chat-input input {
+            flex-grow: 1;
+            border-radius: 20px;
+            padding: 10px 15px;
+            border: 1px solid #ced4da;
+            margin-right: 10px;
+        }
+        .chat-input button {
+            border-radius: 20px;
+        }
+        .analysis-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .timestamp-item {
+            border-bottom: 1px solid #e9ecef;
+            padding: 10px 0;
+        }
+        .timestamp-header {
+            font-weight: 600;
+            color: #4285F4;
+        }
+        .loading-spinner {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        .spinner-border {
+            color: #4285F4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="app-header">
+            <h1 class="app-title">Video Analysis and Chat</h1>
+            <p class="text-muted">Upload a video, analyze it with Google Gemini 2.0 Flash, and chat about its content</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="upload-section">
+                    <h3>Upload Video</h3>
+                    <form id="upload-form" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <input type="file" class="form-control" id="video-file" name="video" accept="video/*">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload & Analyze</button>
+                    </form>
+                    <div class="loading-spinner" id="upload-spinner">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p>Analyzing video with Gemini 2.0 Flash... This may take a few minutes.</p>
+                    </div>
+                </div>
+
+                <div class="video-container">
+                    <h3>Video</h3>
+                    <div id="video-player-container">
+                        <p class="text-muted">Upload a video to see it here</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="analysis-section" id="analysis-container">
+                    <h3>Video Analysis</h3>
+                    <div id="analysis-content">
+                        <p class="text-muted">Analysis will appear here after video processing</p>
+                    </div>
+                </div>
+
+                <div class="chat-container">
+                    <h3>Chat with Video</h3>
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message ai-message">
+                            Hello! Upload a video and I'll analyze it. Then you can ask me questions about the content.
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="chat-input" placeholder="Ask about the video..." disabled>
+                        <button class="btn btn-primary" id="send-button" disabled>Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadForm = document.getElementById('upload-form');
+            const videoFileInput = document.getElementById('video-file');
+            const videoPlayerContainer = document.getElementById('video-player-container');
+            const analysisContainer = document.getElementById('analysis-content');
+            const chatMessages = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input');
+            const sendButton = document.getElementById('send-button');
+            const uploadSpinner = document.getElementById('upload-spinner');
+
+            let currentVideo = null;
+
+            // Handle video upload
+            uploadForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData();
+                const videoFile = videoFileInput.files[0];
+                
+                if (!videoFile) {
+                    alert('Please select a video file');
+                    return;
+                }
+                
+                formData.append('video', videoFile);
+                
+                // Show loading spinner
+                uploadSpinner.style.display = 'block';
+                
+                // Upload video and get analysis
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Hide loading spinner
+                    uploadSpinner.style.display = 'none';
+                    
+                    if (data.error) {
+                        alert('Error: ' + data.error);
+                        return;
+                    }
+                    
+                    // Update current video
+                    currentVideo = data.filename;
+                    
+                    // Display video player
+                    const videoElement = document.createElement('video');
+                    videoElement.src = '/uploads/' + data.filename;
+                    videoElement.controls = true;
+                    videoElement.style.width = '100%';
+                    videoElement.style.maxHeight = '350px';
+                    
+                    videoPlayerContainer.innerHTML = '';
+                    videoPlayerContainer.appendChild(videoElement);
+                    
+                    // Display analysis
+                    displayAnalysis(data.analysis);
+                    
+                    // Enable chat
+                    chatInput.disabled = false;
+                    sendButton.disabled = false;
+                    
+                    // Add system message
+                    addMessage('Analysis complete! You can now chat about the video content.', 'ai');
+                })
+                .catch(error => {
+                    uploadSpinner.style.display = 'none';
+                    alert('Error: ' + error.message);
+                });
+            });
+
+            // Display structured analysis
+            function displayAnalysis(analysis) {
+                let html = '<div class="analysis-content">';
+                
+                // Display summary
+                if (analysis.summary) {
+                    html += `<div class="mb-4">
+                        <h4>Summary</h4>
+                        <p>${analysis.summary}</p>
+                    </div>`;
+                }
+                
+                // Display timestamps
+                if (analysis.timestamps && analysis.timestamps.length > 0) {
+                    html += '<h4>Timeline Analysis</h4>';
+                    
+                    analysis.timestamps.forEach(timestamp => {
+                        html += `<div class="timestamp-item">
+                            <div class="timestamp-header">${timestamp.time}</div>`;
+                            
+                        if (timestamp.objects && timestamp.objects.length > 0) {
+                            html += `<div><strong>Objects:</strong> ${timestamp.objects.join(', ')}</div>`;
+                        }
+                        
+                        if (timestamp.people && timestamp.people.length > 0) {
+                            html += `<div><strong>People:</strong> ${timestamp.people.join(', ')}</div>`;
+                        }
+                        
+                        if (timestamp.activities && timestamp.activities.length > 0) {
+                            html += `<div><strong>Activities:</strong> ${timestamp.activities.join(', ')}</div>`;
+                        }
+                        
+                        if (timestamp.visible_text) {
+                            html += `<div><strong>Visible Text:</strong> ${timestamp.visible_text}</div>`;
+                        }
+                        
+                        if (timestamp.transcript) {
+                            html += `<div><strong>Transcript:</strong> ${timestamp.transcript}</div>`;
+                        }
+                        
+                        html += '</div>';
+                    });
+                }
+                
+                // If raw analysis is available (fallback)
+                if (analysis.raw_analysis) {
+                    html += `<div class="mb-4">
+                        <h4>Analysis</h4>
+                        <pre>${analysis.raw_analysis}</pre>
+                    </div>`;
+                }
+                
+                html += '</div>';
+                analysisContainer.innerHTML = html;
+            }
+
+            // Handle chat
+            sendButton.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            function sendMessage() {
+                const message = chatInput.value.trim();
+                
+                if (!message) return;
+                
+                // Add user message to chat
+                addMessage(message, 'user');
+                
+                // Clear input
+                chatInput.value = '';
+                
+                // Disable input while waiting for response
+                chatInput.disabled = true;
+                sendButton.disabled = true;
+                
+                // Send message to server
+                fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Re-enable input
+                    chatInput.disabled = false;
+                    sendButton.disabled = false;
+                    
+                    if (data.error) {
+                        addMessage('Error: ' + data.error, 'ai');
+                        return;
+                    }
+                    
+                    // Add AI response to chat
+                    addMessage(data.response, 'ai');
+                    
+                    // Focus input for next message
+                    chatInput.focus();
+                })
+                .catch(error => {
+                    chatInput.disabled = false;
+                    sendButton.disabled = false;
+                    addMessage('Error: ' + error.message, 'ai');
+                });
+            }
+
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender === 'user' ? 'user-message' : 'ai-message'}`;
+                messageDiv.textContent = text;
+                
+                chatMessages.appendChild(messageDiv);
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>
