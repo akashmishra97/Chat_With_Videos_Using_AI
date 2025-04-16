@@ -10,6 +10,14 @@ This application allows you to upload videos, analyze them using Google's Gemini
 
 All this information is stored in a vector database (ChromaDB) to enable semantic search and natural language querying of the video content.
 
+## Key Features & Improvements (2025)
+
+- **Robust Metadata Handling**: Video analysis data is stored in ChromaDB with strict type safety (no None/null values in metadata), ensuring reliable storage and retrieval.
+- **Semantic Search & Retrieval**: Uses Sentence-Transformers for high-quality embeddings and ChromaDB for fast, context-rich search.
+- **Debug Logging**: Extensive debug logs for chunk storage and query results help troubleshoot and validate retrieval accuracy.
+- **Hierarchical & Enriched Indexing**: Video is analyzed and indexed at fine granularity (timestamps/scenes), with rich context for each chunk.
+- **Multi-stage Retrieval**: Queries are semantically matched, reranked, and assembled for comprehensive answers.
+
 ## Features
 
 - Video upload and processing
@@ -18,13 +26,13 @@ All this information is stored in a vector database (ChromaDB) to enable semanti
 - Interactive chat interface to ask questions about the video
 - Beautiful and responsive UI
 
-## Video Upload Limitations
+## Video Upload & Analysis Limitations
 
-- Maximum video file size: 100MB
-- Supported formats: MP4, MOV, AVI, and other common video formats
-- Recommended video length: 1-5 minutes for optimal performance
-- Longer videos (up to 10 minutes) can be processed but may take significantly more time
-- Video quality: Higher quality videos will result in better analysis
+- **Maximum video file size:** 100MB (enforced by backend)
+- **Recommended video length:** 1–5 minutes (due to Gemini API/model constraints)
+- **Longer videos:** Gemini API may only analyze the first few minutes. For advanced users, split longer videos into segments and upload/analyze each separately for full coverage.
+- **Supported formats:** MP4, MOV, AVI, and other common video formats
+- **Analysis quality:** Higher quality videos yield better results
 
 ## API Key Requirements
 
@@ -69,26 +77,26 @@ This application requires a Google API key with access to the Gemini 2.0 Flash m
 2. Wait for the analysis to complete (this may take a few minutes depending on the video length)
 3. Review the detailed analysis with timestamps
 4. Use the chat interface to ask questions about the video content
+5. **If your video is long and analysis stops early, split it into smaller parts and upload each part separately.**
 
 ## Technologies Used
 
 - Google Gemini 2.0 Flash for video analysis
 - Flask for the web server
 - ChromaDB for vector storage
+- Sentence-Transformers for semantic embeddings
 - JavaScript for the frontend
 
 ## Security Notes
 
-- This application is designed for local use or development environments
-- For production deployment, additional security measures would be needed
 - API keys are stored in environment variables and not hardcoded in the application
 - The `.env` file is included in `.gitignore` to prevent accidentally committing API keys
 
-## Notes
+## Troubleshooting & Tips
 
-- Maximum video file size is limited to 100MB
-- Video analysis may take several minutes depending on the length and complexity of the video
-- The quality of the analysis depends on the clarity and content of the video
+- **No results for queries?** Check the terminal for `[DEBUG]` logs. Make sure chunks are stored and queries return relevant results.
+- **Analysis stops after a few minutes?** This is a Gemini API/model limitation. Split longer videos and analyze in parts.
+- **Want to extend or customize?** See `app.py` for advanced configuration (e.g., chunking, retrieval strategies, logging).
 
 ## License
 
