@@ -10,6 +10,7 @@ import chromadb
 from dotenv import load_dotenv
 from pytube import YouTube
 import time
+from sentence_transformers import SentenceTransformer
 
 # Load environment variables
 load_dotenv()
@@ -17,6 +18,9 @@ load_dotenv()
 # Configure Google Gemini API
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=GOOGLE_API_KEY)
+
+# Initialize SentenceTransformer embedding model (load once at startup)
+embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -126,47 +130,56 @@ def analyze_video_with_gemini(video_path):
         return {"error": str(e)}
 
 def store_analysis_in_vector_db(video_filename, analysis):
-    """Store video analysis in ChromaDB vector database"""
+    """Store video analysis in ChromaDB vector database with semantic embeddings"""
     try:
-        # Convert analysis to strings for storage
         timestamps = analysis.get("timestamps", [])
-        
-        # Store each timestamp as a separate document for more granular retrieval
+
         for i, timestamp in enumerate(timestamps):
-            # Convert timestamp data to string
-            timestamp_str = json.dumps(timestamp)
-            
-            # Create a unique ID for this timestamp entry
-            doc_id = f"{video_filename}_{i}"
-            
-            # Store in vector database
+            text_parts = []
+            # Combine all relevant fields for context-rich embedding
+            for field in ["description", "activities", "objects", "people", "text", "transcript", "visible_text", "background", "camera"]:
+                val = timestamp.get(field)
+                if isinstance(val, list):
+                    text_parts.append("; ".join(map(str, val)))
+                elif val:
+                    text_parts.append(str(val))
+            # Add the time itself for reference
+            if timestamp.get("time"):
+                text_parts.append(f"Time: {timestamp['time']}")
+            # Add start_time/end_time if present
+            if timestamp.get("start_time"):
+                text_parts.append(f"Start: {timestamp['start_time']}")
+            if timestamp.get("end_time"):
+                text_parts.append(f"End: {timestamp['end_time']}")
+            chunk_text = " | ".join([x for x in text_parts if x])
+
+            # DEBUG: Print what is being embedded
+            print(f"[DEBUG] Storing chunk for {video_filename} at index {i}:")
+            print(chunk_text)
+
+            # Generate semantic embedding
+            embedding = embedding_model.encode(chunk_text, show_progress_bar=False, normalize_embeddings=True).tolist()
+
+            # Prepare metadata for ChromaDB, ensuring all values are str/int/float/bool (no None)
+            def sanitize(val):
+                return val if val is not None else ""
+            metadata = {
+                "video_filename": sanitize(video_filename),
+                "timestamp_index": i,
+                "start_time": sanitize(timestamp.get("start_time")),
+                "end_time": sanitize(timestamp.get("end_time")),
+                "time": sanitize(timestamp.get("time")),
+                # Optionally, you can exclude 'raw' if it contains nested None values or is not needed for search
+            }
+
             video_collection.add(
-                documents=[timestamp_str],
-                metadatas=[{
-                    "video": video_filename,
-                    "timestamp": timestamp.get("time", "unknown"),
-                    "type": "timestamp_analysis"
-                }],
-                ids=[doc_id]
+                documents=[chunk_text],
+                embeddings=[embedding],
+                metadatas=[metadata],
+                ids=[f"{video_filename}_{i}"]
             )
-        
-        # Store the overall summary
-        summary = analysis.get("summary", "")
-        if summary:
-            video_collection.add(
-                documents=[summary],
-                metadatas=[{
-                    "video": video_filename,
-                    "type": "summary"
-                }],
-                ids=[f"{video_filename}_summary"]
-            )
-            
-        return True
-    
     except Exception as e:
-        print(f"Error storing in vector DB: {str(e)}")
-        return False
+        print(f"Error storing analysis in vector DB: {str(e)}")
 
 @app.route('/')
 def index():
@@ -217,116 +230,6 @@ def upload_video():
     
     return jsonify({'error': 'Unknown error occurred'}), 500
 
-@app.route('/analyze-youtube', methods=['POST'])
-def analyze_youtube_video():
-    global current_video, video_analysis
-    
-    data = request.json
-    youtube_url = data.get('youtube_url', '')
-    
-    if not youtube_url:
-        return jsonify({'error': 'No YouTube URL provided'}), 400
-    
-    try:
-        # Create uploads folder if it doesn't exist
-        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-        
-        # Download YouTube video with more robust error handling and retries
-        try:
-            # Extract video ID from URL
-            video_id = None
-            if 'youtube.com/watch?v=' in youtube_url:
-                video_id = youtube_url.split('watch?v=')[1].split('&')[0]
-            elif 'youtu.be/' in youtube_url:
-                video_id = youtube_url.split('youtu.be/')[1].split('?')[0]
-            
-            if not video_id:
-                return jsonify({'error': 'Could not extract video ID from URL'}), 400
-            
-            # Create a YouTube object with the video ID
-            yt = YouTube(f'https://www.youtube.com/watch?v={video_id}')
-            
-            # Add a timeout and retry mechanism
-            max_retries = 3
-            retry_count = 0
-            video_stream = None
-            
-            while retry_count < max_retries:
-                try:
-                    # Try to get the video stream
-                    video_stream = yt.streams.filter(progressive=True, file_extension='mp4').order_by('resolution').desc().first()
-                    if video_stream:
-                        break
-                except Exception as e:
-                    print(f"Retry {retry_count + 1}/{max_retries}: {str(e)}")
-                    retry_count += 1
-                    time.sleep(1)  # Wait before retrying
-            
-            if not video_stream:
-                return jsonify({'error': 'Could not find a suitable video stream after multiple attempts'}), 400
-            
-            # Generate a filename based on the video title or ID if title is not available
-            video_title = secure_filename(yt.title) if yt.title else video_id
-            filename = f"{video_title}_{video_stream.resolution}.mp4"
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            
-            # Check if the file already exists (to avoid re-downloading)
-            if not os.path.exists(filepath):
-                # Download the video with retries
-                retry_count = 0
-                download_success = False
-                
-                while retry_count < max_retries and not download_success:
-                    try:
-                        video_stream.download(output_path=app.config['UPLOAD_FOLDER'], filename=filename)
-                        download_success = True
-                    except Exception as e:
-                        print(f"Download retry {retry_count + 1}/{max_retries}: {str(e)}")
-                        retry_count += 1
-                        time.sleep(2)  # Wait before retrying
-                
-                if not download_success:
-                    return jsonify({'error': 'Failed to download the video after multiple attempts'}), 500
-            
-            # Process the video with Gemini
-            try:
-                # Analyze video
-                analysis = analyze_video_with_gemini(filepath)
-                
-                # Store analysis in vector database
-                store_analysis_in_vector_db(filename, analysis)
-                
-                # Update current video information
-                current_video = filepath
-                video_analysis = analysis
-                
-                # Add video metadata
-                video_metadata = {
-                    'title': yt.title,
-                    'author': yt.author,
-                    'length': yt.length,
-                    'views': yt.views,
-                    'thumbnail_url': yt.thumbnail_url,
-                    'source': 'youtube',
-                    'source_url': youtube_url
-                }
-                
-                return jsonify({
-                    'success': True,
-                    'filename': filename,
-                    'analysis': analysis,
-                    'metadata': video_metadata,
-                    'message': 'YouTube video downloaded and analyzed successfully'
-                })
-                
-            except Exception as e:
-                return jsonify({'error': f'Error processing video: {str(e)}'}), 500
-                
-        except Exception as e:
-            return jsonify({'error': f'Error with YouTube video: {str(e)}'}), 400
-    
-    except Exception as e:
-        return jsonify({'error': f'Error downloading YouTube video: {str(e)}'}), 500
 
 @app.route('/chat', methods=['POST'])
 def chat_with_video():
@@ -343,10 +246,12 @@ def chat_with_video():
     
     try:
         # Search the vector database for relevant information
+        print(f"[DEBUG] User query: {user_message}")
         query_results = video_collection.query(
             query_texts=[user_message],
             n_results=5
         )
+        print(f"[DEBUG] ChromaDB query results: {query_results}")
         
         # Extract relevant contexts and timestamps from query results
         contexts = []
@@ -356,11 +261,16 @@ def chat_with_video():
             for i, doc in enumerate(query_results['documents'][0]):
                 contexts.append(doc)
                 
-                # Extract timestamp from metadata if available
+                # Extract start_time and end_time from metadata if available
                 if 'metadatas' in query_results and query_results['metadatas'][0]:
-                    timestamp = query_results['metadatas'][0][i].get('timestamp', '')
-                    if timestamp:
-                        timestamps.append(timestamp)
+                    meta = query_results['metadatas'][0][i]
+                    start_time = meta.get('start_time', '')
+                    end_time = meta.get('end_time', '')
+                    # Format as [HH:MM:SS] or [start - end]
+                    if start_time and end_time:
+                        timestamps.append(f"[{start_time} - {end_time}]")
+                    elif start_time:
+                        timestamps.append(f"[{start_time}]")
         
         # Create a context string from the retrieved documents
         context_str = "\n".join(contexts)
