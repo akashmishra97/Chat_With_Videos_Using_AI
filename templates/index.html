@@ -145,9 +145,6 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload-content" type="button" role="tab" aria-controls="upload-content" aria-selected="true">Upload File</button>
                         </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="youtube-tab" data-bs-toggle="tab" data-bs-target="#youtube-content" type="button" role="tab" aria-controls="youtube-content" aria-selected="false">YouTube Link</button>
-                        </li>
                     </ul>
                     <div class="tab-content" id="videoSourceTabContent">
                         <div class="tab-pane fade show active" id="upload-content" role="tabpanel" aria-labelledby="upload-tab">
@@ -156,14 +153,6 @@
                                     <input type="file" class="form-control" id="video-file" name="video" accept="video/*">
                                 </div>
                                 <button type="submit" class="btn btn-primary">Upload & Analyze</button>
-                            </form>
-                        </div>
-                        <div class="tab-pane fade" id="youtube-content" role="tabpanel" aria-labelledby="youtube-tab">
-                            <form id="youtube-form">
-                                <div class="mb-3">
-                                    <input type="text" class="form-control" id="youtube-url" placeholder="Enter YouTube URL (e.g., https://www.youtube.com/watch?v=...)">
-                                </div>
-                                <button type="submit" class="btn btn-primary">Analyze YouTube Video</button>
                             </form>
                         </div>
                     </div>
@@ -210,9 +199,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const uploadForm = document.getElementById('upload-form');
-            const youtubeForm = document.getElementById('youtube-form');
             const videoFileInput = document.getElementById('video-file');
-            const youtubeUrlInput = document.getElementById('youtube-url');
             const videoPlayerContainer = document.getElementById('video-player-container');
             const analysisContainer = document.getElementById('analysis-content');
             const chatMessages = document.getElementById('chat-messages');
@@ -281,90 +268,6 @@
                     
                     // Add system message
                     addMessage('Analysis complete! You can now chat about the video content.', 'ai');
-                })
-                .catch(error => {
-                    uploadSpinner.style.display = 'none';
-                    alert('Error: ' + error.message);
-                });
-            });
-            
-            // Handle YouTube video analysis
-            youtubeForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const youtubeUrl = youtubeUrlInput.value.trim();
-                
-                if (!youtubeUrl) {
-                    alert('Please enter a YouTube URL');
-                    return;
-                }
-                
-                // Validate YouTube URL
-                const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/;
-                if (!youtubeRegex.test(youtubeUrl)) {
-                    alert('Please enter a valid YouTube URL');
-                    return;
-                }
-                
-                // Show loading spinner
-                uploadSpinner.style.display = 'block';
-                
-                // Send YouTube URL for analysis
-                fetch('/analyze-youtube', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ youtube_url: youtubeUrl })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Hide loading spinner
-                    uploadSpinner.style.display = 'none';
-                    
-                    if (data.error) {
-                        alert('Error: ' + data.error);
-                        return;
-                    }
-                    
-                    // Update current video
-                    currentVideo = data.filename;
-                    
-                    // Display video player
-                    const videoElement = document.createElement('video');
-                    videoElement.src = '/uploads/' + data.filename;
-                    videoElement.controls = true;
-                    videoElement.style.width = '100%';
-                    videoElement.style.maxHeight = '350px';
-                    videoElement.id = 'video-player';
-                    
-                    videoPlayerContainer.innerHTML = '';
-                    videoPlayerContainer.appendChild(videoElement);
-                    
-                    // Store video player reference
-                    videoPlayer = videoElement;
-                    
-                    // Display video metadata if available
-                    if (data.metadata) {
-                        const metadataHtml = `
-                            <div class="alert alert-info mb-3">
-                                <h5>${data.metadata.title}</h5>
-                                <p>By: ${data.metadata.author} | Views: ${data.metadata.views.toLocaleString()}</p>
-                                <p><a href="${data.metadata.source_url}" target="_blank">View on YouTube</a></p>
-                            </div>
-                        `;
-                        videoPlayerContainer.insertAdjacentHTML('afterbegin', metadataHtml);
-                    }
-                    
-                    // Display analysis
-                    displayAnalysis(data.analysis);
-                    
-                    // Enable chat
-                    chatInput.disabled = false;
-                    sendButton.disabled = false;
-                    
-                    // Add system message
-                    addMessage('YouTube video analysis complete! You can now chat about the video content.', 'ai');
                 })
                 .catch(error => {
                     uploadSpinner.style.display = 'none';

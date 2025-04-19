@@ -1,0 +1,823 @@
+{
+  "timestamps": [
+    {
+      "time": "00:00",
+      "objects": [],
+      "people": [],
+      "activities": [],
+      "visible_text": "UTSouthwestern Clements University Hospital",
+      "transcript": "",
+      "background": "White background with text",
+      "camera": "Static"
+    },
+    {
+      "time": "00:03",
+      "objects": [],
+      "people": [],
+      "activities": [],
+      "visible_text": "The video you are about to see is graphic in nature. Viewer discretion is advised.",
+      "transcript": "",
+      "background": "White background with text",
+      "camera": "Static"
+    },
+    {
+      "time": "00:08",
+      "objects": [],
+      "people": [],
+      "activities": [],
+      "visible_text": "LIVER TRANSPLANT",
+      "transcript": "",
+      "background": "White background with text",
+      "camera": "Static"
+    },
+    {
+      "time": "00:13",
+      "objects": [
+        "Sink",
+        "Faucet",
+        "Soap dispenser",
+        "Surgical robot",
+        "Boxes of supplies",
+        "Hallway"
+      ],
+      "people": [
+        "Surgeon: In blue scrubs, mask, and glasses with headgear and lights; washing hands"
+      ],
+      "activities": [
+        "Surgeon washing hands",
+        "Surgery preparation"
+      ],
+      "visible_text": "00:00",
+      "transcript": "This evening, we're performing a liver transplant on a patient with cirrhosis and decompensated liver disease, who has a meld score in the high 20s.",
+      "background": "Hospital hallway",
+      "camera": "Close-up shot, panning with surgeon washing hands"
+    },
+    {
+      "time": "00:21",
+      "objects": [
+        "Door",
+        "Operating room"
+      ],
+      "people": [
+        "Parsia Vagefi, M.D.: Chief, Surgical Transplant; wearing blue scrubs, mask, glasses with headgear and lights, enters operating room",
+        "Medical team in operating room (blurred)"
+      ],
+      "activities": [
+        "Entering operating room",
+        "Preparing for surgery"
+      ],
+      "visible_text": "00:00:47 Parsia Vagefi, M.D. Chief, Surgical Transplantation",
+      "transcript": "Supine, right arm tucked. And uh liver's on the way, blood's in the room.",
+      "background": "Operating room",
+      "camera": "Following surgeon entering operating room"
+    },
+    {
+      "time": "00:27",
+      "objects": [
+        "Patient's body",
+        "Scalpel",
+        "Marker",
+        "Drapes",
+        "Skin"
+      ],
+      "people": [
+        "Surgeon's hands in gloves: Making incision after marking with marker"
+      ],
+      "activities": [
+        "Making initial incision",
+        "Marking incision area on the patient"
+      ],
+      "visible_text": "",
+      "transcript": "",
+      "background": "Operating room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "00:30",
+      "objects": [
+        "Surgical headgear",
+        "Surgical gown"
+      ],
+      "people": [
+        "Steven Hanish, M.D.: Surgical Director, Liver Transplant; in surgical attire"
+      ],
+      "activities": [],
+      "visible_text": "Steven Hanish, M.D. Surgical Director, Liver Transplant",
+      "transcript": "cision.",
+      "background": "Operating room",
+      "camera": "Close-up, still"
+    },
+    {
+      "time": "00:34",
+      "objects": [
+        "Surgical instruments",
+        "Skin",
+        "Body tissue"
+      ],
+      "people": [
+        "Surgeon's hands in gloves: Making incision with a scalpel"
+      ],
+      "activities": [
+        "Incision"
+      ],
+      "visible_text": "",
+      "transcript": "",
+      "background": "Operating room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "00:36",
+      "objects": [
+        "Skin",
+        "Body fat",
+        "Surgical instruments"
+      ],
+      "people": [
+        "Surgeon's hands in gloves: Making incision through layers of skin and fat with a scalpel"
+      ],
+      "activities": [
+        "Cutting through skin and body fat"
+      ],
+      "visible_text": "",
+      "transcript": "Liver transplant performed through a very large incision, as we have to remove the old disease liver and place the new liver in the same location.",
+      "background": "Operating room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "00:42",
+      "objects": [
+        "Operating room lights",
+        "Surgical instruments on instrument table",
+        "Machines",
+        "IV poles",
+        "Monitor"
+      ],
+      "people": [
+        "Medical team performing surgery: Wearing full surgical attire including headgear and lights and face masks"
+      ],
+      "activities": [
+        "Medical team continues with liver transplant",
+        "Surgical team assisting",
+        "Surgery preparation"
+      ],
+      "visible_text": "",
+      "transcript": "The liver is located in the right upper quadrant, and that's where our incision is focused.",
+      "background": "Operating room",
+      "camera": "Wide shot"
+    },
+    {
+      "time": "00:47",
+      "objects": [
+        "Body tissue",
+        "Skin"
+      ],
+      "people": [
+        "Surgeon's hands in gloves: Incising and separating the body tissue using scalpel"
+      ],
+      "activities": [
+        "Incising tissue"
+      ],
+      "visible_text": "",
+      "transcript": "",
+      "background": "Operating room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "00:50",
+      "objects": [],
+      "people": [
+        "Surgeon in surgical attire working on patient"
+      ],
+      "activities": [
+        "Continuing with the surgery"
+      ],
+      "visible_text": "",
+      "transcript": "This takes a large team to perform.",
+      "background": "Operating room",
+      "camera": "Close-up following surgey in patient"
+    },
+    {
+      "time": "00:54",
+      "objects": [
+        "Bloody tissue",
+        "Gloves",
+        "Surgical tools"
+      ],
+      "people": [
+        "Surgeons operating on patient",
+        "Surgeons hands "
+      ],
+      "activities": [
+        "Cutting through skin and fat "
+      ],
+      "visible_text": "",
+      "transcript": "You have a stitch silk",
+      "background": "Operation room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "00:59",
+      "objects": [
+        "operating room lights",
+        "monitor"
+      ],
+      "people": [
+        "Highly qualified liver transplant anesthesia team "
+      ],
+      "activities": [
+        "Transplantation preparation"
+      ],
+      "visible_text": "",
+      "transcript": "To surgeons highly qualified liver transplant anesthesia team. Also highly qualified nursing team in the operating room.",
+      "background": "Operating room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "01:03",
+      "objects": [
+        "Gloves"
+      ],
+      "people": [
+        "Surgeons operating on patient",
+        "Hands in gloves"
+      ],
+      "activities": [
+        "Moving body tissue "
+      ],
+      "visible_text": "",
+      "transcript": "You have another Kelly number one",
+      "background": "Operation room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "01:10",
+      "objects": [
+        "gloves",
+        "instruments"
+      ],
+      "people": [
+        "Surgeons operating on patient",
+        "Hands in gloves"
+      ],
+      "activities": [
+        "Cutting through tissue"
+      ],
+      "visible_text": "",
+      "transcript": "",
+      "background": "Operation room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "01:15",
+      "objects": [
+        "Gloves",
+        "instruments"
+      ],
+      "people": [
+        "Surgeons operating on patient",
+        "Hands in gloves"
+      ],
+      "activities": [
+        "Moving tissue"
+      ],
+      "visible_text": "",
+      "transcript": "Kra.",
+      "background": "Operation room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "01:19",
+      "objects": [
+        "Surgical instruments",
+        "blood on drapes"
+      ],
+      "people": [
+        "Surgeons operating on patient",
+        "Hands in gloves"
+      ],
+      "activities": [
+        "Stitching tissue"
+      ],
+      "visible_text": "",
+      "transcript": "Liver patients often have multiple issues related to their liver failure, including significant bleeding disorders from their coagulopathy, as well as often some degree of renal dysfunction, and also the presence of fluid within the abdomen or the chest.",
+      "background": "Operating room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "01:34",
+      "objects": [
+        "Skin"
+      ],
+      "people": [
+        "Washing skin"
+      ],
+      "activities": [
+        "Washing skin"
+      ],
+      "visible_text": "",
+      "transcript": "",
+      "background": "Operating room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "01:36",
+      "objects": [],
+      "people": [
+        "Surgeons operating on patient",
+        "Hands in gloves"
+      ],
+      "activities": [
+        "Stitching body tissue"
+      ],
+      "visible_text": "",
+      "transcript": "Needle back. 4 force.",
+      "background": "Operation room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "01:41",
+      "objects": [],
+      "people": [
+        "Surgeons operating on patient",
+        "Hands in gloves"
+      ],
+      "activities": [
+        "Stitching body tissue",
+        "Team assisting"
+      ],
+      "visible_text": "",
+      "transcript": "",
+      "background": "Operating room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "01:46",
+      "objects": [],
+      "people": [
+        "Surgeons operating on patient",
+        "Hands in gloves"
+      ],
+      "activities": [
+        "Stitching body tissue"
+      ],
+      "visible_text": "",
+      "transcript": "Once we enter the abdomen, we must begin the process of removing the old liver, and this process involves dividing all the attachments that hold the liver in place.",
+      "background": "Operation room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "01:51",
+      "objects": [],
+      "people": [
+        "Surgeons operating on patient",
+        "Hands in gloves"
+      ],
+      "activities": [
+        "Cutting tissue",
+        "Working as a team "
+      ],
+      "visible_text": "",
+      "transcript": "",
+      "background": "Operation room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "01:57",
+      "objects": [
+        "Surgical tools"
+      ],
+      "people": [
+        "Surgeons operating on patient",
+        "Hands in gloves"
+      ],
+      "activities": [
+        "Cutting tissue",
+        "Separating vein and bile duct from tissue"
+      ],
+      "visible_text": "",
+      "transcript": "After this is performed, then we proceed to divide all of the blood vessels that are holding the liver in place as well as the bile duct.",
+      "background": "Operation room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "02:05",
+      "objects": [
+        "Surgical tools"
+      ],
+      "people": [
+        "Operating team in progress of transplantation "
+      ],
+      "activities": [
+        "Talking while completing transplantation"
+      ],
+      "visible_text": "",
+      "transcript": "",
+      "background": "Operation room",
+      "camera": "Following surgeons cutting tissue"
+    },
+    {
+      "time": "02:11",
+      "objects": [],
+      "people": [
+        "MacConmara Director, Organ Perfusion Lab"
+      ],
+      "activities": [
+        "Operating on new liver and perfusing with solution "
+      ],
+      "visible_text": "Malcolm MacConmara, M.D. Director, Organ Perfusion Lab",
+      "transcript": "This is the portal vein here. So this would have been under the pancreas in the donor. And that's a splenic artery and then it continues on as the hepatic artery. Gives off a couple of other branches and then it enters the liver, and right next here is the bile duct. You see it still it's got a little bit of residual bile that it was making.",
+      "background": "Operation room",
+      "camera": "Close-up over new liver being perfused"
+    },
+    {
+      "time": "02:21",
+      "objects": [],
+      "people": [
+        "Medical team, surgeons performing transplantation ",
+        "Nurse passing tool"
+      ],
+      "activities": [
+        "Cutting "
+      ],
+      "visible_text": "",
+      "transcript": "",
+      "background": "Operation room",
+      "camera": "Following transplantation process"
+    },
+    {
+      "time": "02:24",
+      "objects": [],
+      "people": [
+        "Surgeons operating on patient",
+        "Hands in gloves"
+      ],
+      "activities": [
+        "Stitching body tissue",
+        "Washing body tissue "
+      ],
+      "visible_text": "",
+      "transcript": "",
+      "background": "Operation room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "02:30",
+      "objects": [],
+      "people": [
+        "Medical team at the table",
+        "Nurse passing tools",
+        "Assist team watching"
+      ],
+      "activities": [
+        "Completing surgery, and assisting surgeons."
+      ],
+      "visible_text": "",
+      "transcript": "",
+      "background": "Operating room",
+      "camera": "Following transplantation process"
+    },
+    {
+      "time": "02:46",
+      "objects": [],
+      "people": [
+        "Surgeons, and hands with gloves"
+      ],
+      "activities": [
+        "Attaching veins and artery to liver to secure"
+      ],
+      "visible_text": "",
+      "transcript": "By doing the piggyback technique, and maintaining the vena cava in place, which is a challenging procedure to perform",
+      "background": "Operation room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "02:51",
+      "objects": [
+        "Bowls",
+        "instruments"
+      ],
+      "people": [
+        "Medical assisting team",
+        "Performing tasks during surgery"
+      ],
+      "activities": [
+        "Preparing instruments and other surgical equipment "
+      ],
+      "visible_text": "",
+      "transcript": "There is less disturbance to the patient's overall systemic function",
+      "background": "Operation room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "02:59",
+      "objects": [
+        "Gloves",
+        "Veins and other body tissue"
+      ],
+      "people": [
+        "Surgeons operating on patient",
+        "Hands in gloves"
+      ],
+      "activities": [
+        "Attaching veins and other tissue "
+      ],
+      "visible_text": "",
+      "transcript": "So that's a bioduct here? Yes here.",
+      "background": "Operation room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "03:08",
+      "objects": [
+        "Surgical equipment",
+        "Monitoring equipment"
+      ],
+      "people": [
+        "Surgeons operating on patient",
+        "Hands in gloves",
+        "Medical Team members"
+      ],
+      "activities": [
+        "Surgery",
+        "Monitoring vital sign of patient ",
+        "Checking on patient "
+      ],
+      "visible_text": "",
+      "transcript": "",
+      "background": "Operation room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "03:11",
+      "objects": [],
+      "people": [
+        "Perfusionist ",
+        "Removing blood sample for testing"
+      ],
+      "activities": [
+        "Examining blood sample"
+      ],
+      "visible_text": "",
+      "transcript": "The liver is on a liver perfusion device. This is a novel technique that still in clinical trials.",
+      "background": "Operating room",
+      "camera": "Close-up perfusion procedure"
+    },
+    {
+      "time": "03:21",
+      "objects": [],
+      "people": [
+        "Inserting hepatic vein",
+        "Inserting Hepatic veins"
+      ],
+      "activities": [
+        "Inspecting",
+        "Transplantation process"
+      ],
+      "visible_text": "",
+      "transcript": "And UT Southwestern is one of the largest participants in this national clinical trial. Liber is traditionally stored on ice after they've been procured from the donor.",
+      "background": "Operation room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "03:26",
+      "objects": [],
+      "people": [
+        "Hands in gloves and using surgical tools to suture tissue around viens"
+      ],
+      "activities": [
+        "Suturing around blood vessles "
+      ],
+      "visible_text": "",
+      "transcript": "However, using the liver perfusion device. The liver is pumped with warm oxygenated blood and nutrients until it's ready for implantation.",
+      "background": "Operation room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "03:35",
+      "objects": [],
+      "people": [
+        "Surgeons preparing tool table for final stages of transplant"
+      ],
+      "activities": [
+        "Cleaning tool table for use on last phase"
+      ],
+      "visible_text": "",
+      "transcript": "About five minutes Norm. ",
+      "background": "Operation room",
+      "camera": "Medium show surgery team "
+    },
+    {
+      "time": "03:39",
+      "objects": [],
+      "people": [
+        "MacConmara Director, Organ Perfusion Lab preparing liver"
+      ],
+      "activities": [
+        "Prepping for final procedures"
+      ],
+      "visible_text": "Malcolm MacConmara, M.D. Director, Organ Perfusion Lab",
+      "transcript": "So it was.This is the portal vein here. So this would have been under the pancreas in the donor.",
+      "background": "Operation room",
+      "camera": "Close-up over new liver being perfused"
+    },
+    {
+      "time": "03:44",
+      "objects": [
+        "Stitches",
+        "Surgical instruments"
+      ],
+      "people": [
+        "Hands in gloves",
+        "Removing fat around veins"
+      ],
+      "activities": [
+        "Preparing liver for new implantation procedure"
+      ],
+      "visible_text": "",
+      "transcript": "And that's the splenic artery and then it continues on is the hepatic artery. Gives off a couple of other branches and then it enters the liver.",
+      "background": "Operation room",
+      "camera": "Following surgeons cutting tissue"
+    },
+    {
+      "time": "03:54",
+      "objects": [],
+      "people": [
+        "Surgeons with surgical tools",
+        "Hands in gloves suturing "
+      ],
+      "activities": [
+        "Suturing for new liver. "
+      ],
+      "visible_text": "",
+      "transcript": "We first begin by performing the hepatic vein anastomosis.",
+      "background": "Operating room",
+      "camera": "Following surgeons inserting new organs veins"
+    },
+    {
+      "time": "04:00",
+      "objects": [],
+      "people": [
+        "Hands working on surgery"
+      ],
+      "activities": [
+        "Finishing up the surgery"
+      ],
+      "visible_text": "",
+      "transcript": "",
+      "background": "Operating room",
+      "camera": "Zooming in closer for delicate tasks "
+    },
+    {
+      "time": "04:04",
+      "objects": [
+        "Surgical tool",
+        "Drain tubes",
+        "Tissue "
+      ],
+      "people": [
+        "Gloves and surgeons working"
+      ],
+      "activities": [
+        "Completing vein stureing"
+      ],
+      "visible_text": "",
+      "transcript": "",
+      "background": "Operating room",
+      "camera": "Zooming out and in"
+    },
+    {
+      "time": "04:16",
+      "objects": [],
+      "people": [
+        "Nurse cleaning tools from operation room"
+      ],
+      "activities": [
+        "Cleaning tools"
+      ],
+      "visible_text": "",
+      "transcript": "Galbladder. Galbladder coming out. Medium",
+      "background": "Operation room",
+      "camera": "Medium view, following tissue being held to wash in blue solution"
+    },
+    {
+      "time": "04:22",
+      "objects": [
+        "Drain tubes",
+        "tools "
+      ],
+      "people": [
+        "Surgeons using drainage tool"
+      ],
+      "activities": [
+        "Draining area around transplanted liver"
+      ],
+      "visible_text": "",
+      "transcript": "Here you can see that we're performing the hepatic artery anastomosis to allow for the second blood vessel to provide blood flow into the liver.",
+      "background": "Operating room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "04:34",
+      "objects": [],
+      "people": [
+        "Surgical attire "
+      ],
+      "activities": [],
+      "visible_text": "",
+      "transcript": "",
+      "background": "Operation room",
+      "camera": "Close-up over patient's body"
+    },
+    {
+      "time": "04:36",
+      "objects": [
+        "Gloves",
+        "drain tube"
+      ],
+      "people": [
+        "Surgeons securing drain tubes"
+      ],
+      "activities": [
+        "Drain the area for blood clot removal"
+      ],
+      "visible_text": "",
+      "transcript": "We all done you guys already for blood clutch",
+      "background": "Operation room",
+      "camera": "Zooming in closer for drain implementation"
+    },
+    {
+      "time": "04:43",
+      "objects": [
+        "Wipes"
+      ],
+      "people": [
+        "Surgeons using wipes to clean area "
+      ],
+      "activities": [
+        "Cleaning the site "
+      ],
+      "visible_text": "",
+      "transcript": "It is the effort of our surgeons, our anesthesiologist, our nurses and the entire hospital team that allows us to provide this high quality of care for patients undergoing very complex operation.",
+      "background": "Operation room",
+      "camera": "Zooming in closer and wiping body to clean area"
+    },
+    {
+      "time": "04:57",
+      "objects": [
+        "Veins and arteries"
+      ],
+      "people": [
+        "Hands suturing for a clean body close "
+      ],
+      "activities": [
+        "Vein ligation"
+      ],
+      "visible_text": "",
+      "transcript": "",
+      "background": "Operation room",
+      "camera": "Close-up suturing process"
+    },
+    {
+      "time": "05:04",
+      "objects": [],
+      "people": [
+        "Body being prepped"
+      ],
+      "activities": [
+        "Cleaning the area",
+        "Prep for close up and final steps "
+      ],
+      "visible_text": "",
+      "transcript": "Layers of the abdominal wall are then closed. And then we use staples for the skin prior to applying a dry sterile dressing. This operation took 2 hours and 40 minutes to perform from incision to closure. ",
+      "background": "Operation room",
+      "camera": "Close-up shot"
+    },
+    {
+      "time": "05:19",
+      "objects": [],
+      "people": [
+        "Removing staples from incision area."
+      ],
+      "activities": [
+        "Removing staples and cleaning the area",
+        "Cleaning tools",
+        "Closing of the surgical site "
+      ],
+      "visible_text": "",
+      "transcript": "The patient spent five days in the hospital and was discharged home",
+      "background": "Operation room",
+      "camera": "Moving in over incision for last tasks "
+    },
+    {
+      "time": "08:37",
+      "objects": [],
+      "people": [],
+      "activities": [],
+      "visible_text": "UTSouthwestern Clements University Hospital",
+      "transcript": "",
+      "background": "White background with logo and name",
+      "camera": "Static"
+    }
+  ],
+  "summary": "This video documents a liver transplant surgery for a patient with cirrhosis and decompensated liver disease. The video shows the medical staff preforming complex anastomoses from the removal of the old liver to the implantation of the new liver. The new technique of using liver perfusion is noted with doctors discussing the overall procedure."
+}

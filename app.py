@@ -17,6 +17,8 @@ load_dotenv()
 
 # Configure Google Gemini API
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+if not GOOGLE_API_KEY:
+    raise RuntimeError("GOOGLE_API_KEY is not set. Please add it to your .env file or environment variables before starting the app.")
 genai.configure(api_key=GOOGLE_API_KEY)
 
 # Initialize SentenceTransformer embedding model (load once at startup)
@@ -32,7 +34,7 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Initialize ChromaDB
 chroma_client = chromadb.Client()
-video_collection = chroma_client.create_collection(name="video_analysis")
+video_collection = chroma_client.get_or_create_collection(name="video_analysis")
 
 # Store the current video information
 current_video = None
@@ -192,44 +194,41 @@ def uploaded_file(filename):
 @app.route('/upload', methods=['POST'])
 def upload_video():
     global current_video, video_analysis
-    
-    if 'video' not in request.files:
-        return jsonify({'error': 'No video file provided'}), 400
-    
-    file = request.files['video']
-    
-    if file.filename == '':
-        return jsonify({'error': 'No video file selected'}), 400
-    
-    if file:
+    try:
+        if 'video' not in request.files:
+            return jsonify({'error': 'No video file provided'}), 400
+        
+        file = request.files['video']
+        
+        if file.filename == '':
+            return jsonify({'error': 'No video file selected'}), 400
+        
         filename = secure_filename(file.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
+        try:
+            file.save(filepath)
+        except Exception as e:
+            return jsonify({'error': f'Could not save file: {str(e)}'}), 500
         
         # Process the video with Gemini
         try:
-            # Analyze video
             analysis = analyze_video_with_gemini(filepath)
-            
-            # Store analysis in vector database
+            if not analysis or (isinstance(analysis, dict) and analysis.get('error')):
+                error_msg = analysis.get('error', 'Unknown analysis error') if isinstance(analysis, dict) else 'Unknown analysis error'
+                return jsonify({'error': f'Video analysis failed: {error_msg}'}), 500
             store_analysis_in_vector_db(filename, analysis)
-            
-            # Update current video information
             current_video = filepath
             video_analysis = analysis
-            
             return jsonify({
                 'success': True,
                 'filename': filename,
                 'analysis': analysis,
                 'message': 'Video uploaded and analyzed successfully'
             })
-            
         except Exception as e:
             return jsonify({'error': f'Error processing video: {str(e)}'}), 500
-    
-    return jsonify({'error': 'Unknown error occurred'}), 500
-
+    except Exception as e:
+        return jsonify({'error': f'Unexpected error: {str(e)}'}), 500
 
 @app.route('/chat', methods=['POST'])
 def chat_with_video():
